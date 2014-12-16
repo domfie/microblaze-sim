@@ -45,6 +45,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    
       public static final int GLOBAL_POINTER_REGISTER = 28;
       public static final int STACK_POINTER_REGISTER = 29;
+      public static final int MACHINE_STATUS_REGISTER = 35;
+      public static final int IMMEDIATE_TEMP_REGISTER = 36;
    
       private static Register [] regFile = 
           { new Register("R0", 0, 0), new Register("R1", 1, 0),
@@ -63,7 +65,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          	new Register("R26", 26, 0),new Register("R27", 27, 0),
          	new Register("R28", GLOBAL_POINTER_REGISTER, Memory.globalPointer),
          	new Register("R29", STACK_POINTER_REGISTER, Memory.stackPointer),
-         	new Register("R30", 30, 0),new Register("R31", 31, 0)
+         	new Register("R30", 30, 0),new Register("R31", 31, 0),
+         	new Register("MSR", MACHINE_STATUS_REGISTER, 0),
+         	new Register("IMM", IMMEDIATE_TEMP_REGISTER, 0)
            };
          												  
       private static Register programCounter= new Register("PC", 32, Memory.textBaseAddress); 
@@ -153,8 +157,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             return lo.getValue();
          }
          else  
-            return regFile[num].getValue();
-            
+        	for (int i=0; i< regFile.length; i++){
+        		if(regFile[i].getNumber()== num){
+        			return regFile[i].getValue();
+        		}
+        	}
+         return 0;
       }
       		
       	/**

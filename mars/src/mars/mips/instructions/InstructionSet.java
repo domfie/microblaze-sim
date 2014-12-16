@@ -871,6 +871,351 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                       }
                    }));
             
+            instructionList.add(
+                    new BasicInstruction("bri -100",
+                    "Unconditional Branch : Branch to statement at adress of signed 16-bit immediate",
+                	 BasicInstructionFormat.I_FORMAT,
+                    "101110 00000 00000 ffffffffffffffff",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, false);
+                         processBranch(sext(operands[0]));
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("brai -100",
+                    "Unconditional absolute Branch : Jump to statement at adress of signed 16-bit immediate",
+                	 BasicInstructionFormat.I_FORMAT,
+                    "101110 00000 01000 ffffffffffffffff",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, false);
+                         processJump(sext(operands[0]));
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("brid -100",
+                    "Unconditional Branch with delay : Branch to statement at adress of signed 16-bit immediate",
+                	 BasicInstructionFormat.I_FORMAT,
+                    "101110 00000 10000 ffffffffffffffff",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                         processBranch(sext(operands[0]));
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("braid -100",
+                    "Unconditional absolute Branch with delay : Jump to statement at adress of signed 16-bit immediate",
+                	 BasicInstructionFormat.I_FORMAT,
+                    "101110 00000 11000 ffffffffffffffff",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                         processJump(sext(operands[0]));
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("brlid R1,-100",
+                    "Unconditional Branch with link and delay : Branch to statement at adress of signed 16-bit immediate and store PC in R1",
+                	 BasicInstructionFormat.I_FORMAT,
+                    "101110 fffff 10100 ssssssssssssssss",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                         processReturnAddress(operands[0]);
+                         processBranch(sext(operands[1]));
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("brald R1,R2",
+                    "Unconditional absolute Branch with link and delay : Jump to statement at adress of signed 16-bit immediate and store PC in R1",
+                	 BasicInstructionFormat.I_FORMAT,
+                    "101110 fffff 11100 ssssssssssssssss",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                         processReturnAddress(operands[0]);
+                         processJump(sext(operands[1]));
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("brk R1,R2",
+                    "Break : Branch and link to statement at adress of R2, store PC in R1 and set the BIP flag in MSR",
+                	 BasicInstructionFormat.R_FORMAT,
+                    "100110 fffff 01100 sssss 00000000000",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                         processReturnAddress(operands[0]);
+                         processBranch(RegisterFile.getValue(operands[1]));
+                         Coprocessor0.updateRegister(15,(Coprocessor0.getValue(15) | (1 << 28)));
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("brki R1,-100",
+                    "Break : Branch and link to statement at adress of signed 16-bit immediate, store PC in R1 and set the BIP flag in MSR",
+                	 BasicInstructionFormat.R_FORMAT,
+                    "100110 fffff 01100 sssss 00000000000",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                         processReturnAddress(operands[0]);
+                         processBranch(sext(operands[1]));
+                         Coprocessor0.updateRegister(15,(Coprocessor0.getValue(15) | (1 << 28)));
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("imm -100",
+                    "Immediate : Store an immediate in a temporary register. The content of it will be added to the following Type-B instruction.",
+                	 BasicInstructionFormat.I_FORMAT,
+                    "101100 00000 00000 ffffffffffffffff",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         RegisterFile.updateRegister(RegisterFile.IMMEDIATE_TEMP_REGISTER, operands[0]);
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("lbu R1,R2,R3",
+                	 "Load Byte Unsigned: Loads a byte from the memory location at (R2 plus R3) into R1",
+                    BasicInstructionFormat.R_FORMAT,
+                    "110000 fffff sssss ttttt 00000 000000",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                    	   int[] operands = statement.getOperands();
+                           try
+                           {
+                              RegisterFile.updateRegister(operands[0],
+                                  Globals.memory.getByte(
+                                  RegisterFile.getValue(operands[1]
+                                          + operands[2]))
+                                                  << 24
+                                                  >> 24);
+                           } 
+                               catch (AddressErrorException e)
+                              {
+                                 throw new ProcessingException(statement, e);
+                              }
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("lbui R1,R2,-100",
+                	 "Load Byte Unsigned: Loads a byte from the memory location at (R2 plus sign extended 16bit immediate) into R1",
+                    BasicInstructionFormat.I_FORMAT,
+                    "111000 fffff sssss tttttttttttttttt",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                    	   int[] operands = statement.getOperands();
+                           try
+                           {
+                              RegisterFile.updateRegister(operands[0],
+                                  Globals.memory.getByte(
+                                  RegisterFile.getValue(operands[1]
+                                          + sext(operands[2])))
+                                                  << 24
+                                                  >> 24);
+                           } 
+                               catch (AddressErrorException e)
+                              {
+                                 throw new ProcessingException(statement, e);
+                              }
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("lhu R1,R2,R3",
+                    "Load Halfword Unsigned : Loads a halfword from the memory location at (R2 plus R3) into R1",
+                	 BasicInstructionFormat.R_FORMAT,
+                    "110001 fffff sssss ttttt 00000 000000",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         try
+                         {
+                            RegisterFile.updateRegister(operands[0],
+                                Globals.memory.getHalf(
+                                RegisterFile.getValue(operands[2]
+                                        + operands[1]))
+                                                << 16
+                                                >> 16);
+                         } 
+                             catch (AddressErrorException e)
+                            {
+                               throw new ProcessingException(statement, e);
+                            }
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("lhui R1,R2,-100",
+                    "Load Halfword Unsigned: Loads a halfword from the memory location at (R2 plus sign extended 16bit immediate) into R1",
+                    BasicInstructionFormat.I_FORMAT,
+                    "111001 fffff sssss tttttttttttttttt",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         try
+                         {
+                            RegisterFile.updateRegister(operands[0],
+                                Globals.memory.getHalf(
+                                RegisterFile.getValue(operands[2]
+                                        + sext(operands[1])))
+                                                << 16
+                                                >> 16);
+                         } 
+                             catch (AddressErrorException e)
+                            {
+                               throw new ProcessingException(statement, e);
+                            }
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("mfs R1,R2",
+                    "Move from Special Purpose Register : Move the content of the PC(0) or MSR(1) register to R1.",
+                	 BasicInstructionFormat.R_FORMAT,
+                    "100101 fffff 00000 100000000000000 s",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         if(operands[1]>0)
+                        	 RegisterFile.updateRegister(operands[0], RegisterFile.getValue(35));
+                         else
+                        	 RegisterFile.updateRegister(operands[0], RegisterFile.getValue(32));
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("mts R1,R2",
+                    "Move To Special Purpose Register : Move the content of R2 to MSR(1) register",
+                	 BasicInstructionFormat.R_FORMAT,
+                    "100101 00000 sssss 110000000000000 f",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         if(operands[0]>0)
+                        	 RegisterFile.updateRegister(35,RegisterFile.getValue(operands[1]));
+                         else
+                        	 throw new ProcessingException(statement, "PC cant be written");
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("mul R1,R2,R3",
+                	 "Multiplication: Set R1 to low-order 32 bits of the product of R2 and R3",
+                    BasicInstructionFormat.R_FORMAT,
+                    "010000 fffff sssss ttttt 00000 000000",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         long product = (long) RegisterFile.getValue(operands[1])
+                            * (long) RegisterFile.getValue(operands[2]);
+                         RegisterFile.updateRegister(operands[0],
+                            (int) ((product << 32) >> 32));
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("muli R1,R2,-100",
+                	 "Multiplication: Set R1 to low-order 32 bits of the product of R2 and R3",
+                    BasicInstructionFormat.I_FORMAT,
+                    "011000 fffff sssss tttttttttttttttt",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         long product = (long) RegisterFile.getValue(operands[1])
+                            * (long) sext(operands[2]);
+                         RegisterFile.updateRegister(operands[0],
+                            (int) ((product << 32) >> 32));
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("or R1,R2,R3",
+                	 "Bitwise OR : Set R1 to bitwise OR of R2 and R3",
+                    BasicInstructionFormat.R_FORMAT,
+                    "100000 fffff sssss ttttt 00000000000",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         RegisterFile.updateRegister(operands[0],
+                            RegisterFile.getValue(operands[1])
+                            | RegisterFile.getValue(operands[2]));
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("ori R1,R2,-100",
+                	 "Bitwise OR immediate : Set R1 to bitwise OR of R2 and sign-extended 16-bit immediate",
+                    BasicInstructionFormat.I_FORMAT,
+                    "101001 fffff sssss tttttttttttttttt",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         RegisterFile.updateRegister(operands[0],
+                            RegisterFile.getValue(operands[1])
+                            | sext(operands[2]));
+                      }
+                   }));
+            
+            
             
             /* --------------------------------- */
             instructionList.add(
@@ -3995,7 +4340,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       	 */
        
        private int sext(int imm){
-    	   return (imm << 16 >> 16);
+    	   // TODO: clear imm if next instruction is not type B
+    	   int tmp_imm = RegisterFile.getValue(RegisterFile.IMMEDIATE_TEMP_REGISTER);
+    	   if(tmp_imm>0){
+    		   RegisterFile.updateRegister(RegisterFile.IMMEDIATE_TEMP_REGISTER, 0);
+    		   return (tmp_imm << 16)+imm;
+    	   }else
+    		   return (imm << 16 >> 16);
+       }
+       
+       private int extractBitRange(int num, int startingPos, int offset) {
+    	   return (num >> startingPos) & ((1 << offset)-1);
        }
    
    	/*

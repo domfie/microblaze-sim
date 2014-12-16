@@ -82,12 +82,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    	
        public Object[][] setupWindow(){
          int valueBase = NumberDisplayBaseChooser.getBase(settings.getDisplayValuesInHex());
-         tableData = new Object[35][3];
+         tableData = new Object[37][3];
          registers = RegisterFile.getRegisters();
          for(int i=0; i< registers.length; i++){
-            tableData[i][0]= registers[i].getName();
-            tableData[i][1]= new Integer(registers[i].getNumber());
-            tableData[i][2]= NumberDisplayBaseChooser.formatNumber(registers[i].getValue(),valueBase);
+        	int number = new Integer(registers[i].getNumber());
+            tableData[number][0]= registers[i].getName();
+            tableData[number][1]= number<32?number:"";
+            tableData[number][2]= NumberDisplayBaseChooser.formatNumber(registers[i].getValue(),valueBase);
          }
          tableData[32][0]= "pc";
          tableData[32][1]= "";//new Integer(32);
@@ -413,7 +414,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             /* $ra   */  "return address (used by function call)",
             /* pc    */  "program counter",
             /* hi    */  "high-order word of multiply product, or divide remainder",
-            /* lo    */  "low-order word of multiply product, or divide quotient"		  
+            /* lo    */  "low-order word of multiply product, or divide quotient",
+            /* MSR   */  "machine status register",
+            /* IMM   */  "temporarily stored immediate for extending type-B instructions"
             };
       	
           //Implement table cell tool tips.
