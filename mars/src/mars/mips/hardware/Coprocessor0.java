@@ -53,8 +53,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           { new Register("R8 (vaddr)", 8, 0),  
             new Register("R12 (status)", 12, DEFAULT_STATUS_VALUE),
          	new Register("R13 (cause)", 13, 0),  
-         	new Register("R14 (epc)", 14, 0),
-         	new Register("MSR",15,0)
+         	new Register("R14 (epc)", 14, 0)
            };
         												  
    	 

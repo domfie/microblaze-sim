@@ -63,10 +63,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			cop0Tab = cop0;
 			regsTab.setVisible(true);
 			cop1Tab.setVisible(false);
-			cop0Tab.setVisible(true);
+			cop0Tab.setVisible(false);
          this.addTab("Registers", regsTab);
 			//this.addTab("Coproc 1", cop1Tab);
-			this.addTab("Coproc 0", cop0Tab);
+			//this.addTab("Coproc 0", cop0Tab);
          this.setToolTipTextAt(0,"CPU registers");
 			//this.setToolTipTextAt(1,"Coprocessor 1 (floating point unit) registers");
 			//this.setToolTipTextAt(2,"selected Coprocessor 0 (exceptions and interrupts) registers");

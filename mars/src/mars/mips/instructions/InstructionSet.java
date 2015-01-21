@@ -199,6 +199,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                          RegisterFile.updateRegister(operands[0], sum);
                       }
                    }));
+            
             instructionList.add(
                     new BasicInstruction("addic R1,R2,-100",
                 	 "Addition immediate with overflow : set R1 to (R2 plus signed 16-bit immediate)",
@@ -377,6 +378,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                    }));
             
             instructionList.add(
+                    new BasicInstruction("beqi R1,label",
+                	 "Branch if equal : Branch to statement at adress of label if R1 is equal zero",
+                    BasicInstructionFormat.I_FORMAT,
+                    "101111 00000 fffff ssssssssssssssss",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, false);
+                         if (RegisterFile.getValue(operands[0]) == 0)
+                         {
+                            processJump(operands[1]);
+                         }
+                      }
+                   }));
+            
+            instructionList.add(
                     new BasicInstruction("beqid R1,-100",
                 	 "Branch with delay if equal : Branch to statement at adress of signed 16-bit immediate if R1 is equal zero",
                     BasicInstructionFormat.I_FORMAT,
@@ -390,6 +409,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                          if (RegisterFile.getValue(operands[0]) == 0)
                          {
                             processBranch(sext(operands[1]));
+                         }
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("beqid R1,label",
+                	 "Branch with delay if equal : Branch to statement at adress of label if R1 is equal zero",
+                    BasicInstructionFormat.I_FORMAT,
+                    "101111 10000 fffff ssssssssssssssss",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                         if (RegisterFile.getValue(operands[0]) == 0)
+                         {
+                            processJump(operands[1]);
                          }
                       }
                    }));
@@ -449,6 +486,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                    }));
             
             instructionList.add(
+                    new BasicInstruction("bgei R1,label",
+                	 "Branch if greater or equal : Branch to statement at adress of label if R1 is greater or equal zero",
+                    BasicInstructionFormat.I_FORMAT,
+                    "101111 00101 fffff ssssssssssssssss",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, false);
+                         if (RegisterFile.getValue(operands[0]) >= 0)
+                         {
+                            processJump(operands[1]);
+                         }
+                      }
+                   }));
+            
+            instructionList.add(
                     new BasicInstruction("bgeid R1,-100",
                 	 "Branch with delay if greater or equal : Branch to statement at adress of signed 16-bit immediate if R1 is greater or equal zero",
                     BasicInstructionFormat.I_FORMAT,
@@ -462,6 +517,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                          if (RegisterFile.getValue(operands[0]) >= 0)
                          {
                             processBranch(sext(operands[1]));
+                         }
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("bgeid R1,label",
+                	 "Branch with delay if greater or equal : Branch to statement at adress of label if R1 is greater or equal zero",
+                    BasicInstructionFormat.I_FORMAT,
+                    "101111 10101 fffff ssssssssssssssss",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                         if (RegisterFile.getValue(operands[0]) >= 0)
+                         {
+                            processJump(operands[1]);
                          }
                       }
                    }));
@@ -521,6 +594,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                    }));
             
             instructionList.add(
+                    new BasicInstruction("bgti R1,label",
+                	 "Branch if greater : Branch to statement at adress of signed 16-bit immediate if R1 is greater zero",
+                    BasicInstructionFormat.I_FORMAT,
+                    "101111 00100 fffff ssssssssssssssss",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, false);
+                         if (RegisterFile.getValue(operands[0]) > 0)
+                         {
+                            processJump(operands[1]);
+                         }
+                      }
+                   }));
+            
+            instructionList.add(
                     new BasicInstruction("bgtid R1,-100",
                 	 "Branch with delay if greater : Branch to statement at adress of signed 16-bit immediate if R1 is greater zero",
                     BasicInstructionFormat.I_FORMAT,
@@ -534,6 +625,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                          if (RegisterFile.getValue(operands[0]) > 0)
                          {
                             processBranch(sext(operands[1]));
+                         }
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("bgtid R1,label",
+                	 "Branch with delay if greater : Branch to statement at adress of label if R1 is greater zero",
+                    BasicInstructionFormat.I_FORMAT,
+                    "101111 10100 fffff ssssssssssssssss",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                         if (RegisterFile.getValue(operands[0]) > 0)
+                         {
+                            processJump(operands[1]);
                          }
                       }
                    }));
@@ -593,6 +702,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                    }));
             
             instructionList.add(
+                    new BasicInstruction("blei R1,label",
+                	 "Branch if less or equal : Branch to statement at adress of signed 16-bit immediate if R1 is less or equal zero",
+                    BasicInstructionFormat.I_FORMAT,
+                    "101111 00011 fffff ssssssssssssssss",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, false);
+                         if (RegisterFile.getValue(operands[0]) <= 0)
+                         {
+                            processJump(operands[1]);
+                         }
+                      }
+                   }));
+            
+            instructionList.add(
                     new BasicInstruction("bleid R1,-100",
                 	 "Branch with delay if less or equal : Branch to statement at adress of signed 16-bit immediate if R1 is less or equal zero",
                     BasicInstructionFormat.I_FORMAT,
@@ -606,6 +733,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                          if (RegisterFile.getValue(operands[0]) <= 0)
                          {
                             processBranch(sext(operands[1]));
+                         }
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("bleid R1,label",
+                	 "Branch with delay if less or equal : Branch to statement at adress of label if R1 is less or equal zero",
+                    BasicInstructionFormat.I_FORMAT,
+                    "101111 10011 fffff ssssssssssssssss",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                         if (RegisterFile.getValue(operands[0]) <= 0)
+                         {
+                            processJump(operands[1]);
                          }
                       }
                    }));
@@ -665,6 +810,25 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                    }));
             
             instructionList.add(
+                    new BasicInstruction("blti R1,label",
+                	 "Branch if less than : Branch to statement at adress of label if R1 is less than zero",
+                    BasicInstructionFormat.I_FORMAT,
+                    "101111 00010 fffff ssssssssssssssss",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, false);
+                         if (RegisterFile.getValue(operands[0]) < 0)
+                         {
+                            processJump(operands[1]);
+                         }
+                      }
+                   }));
+            
+            
+            instructionList.add(
                     new BasicInstruction("bltid R1,-100",
                 	 "Branch with delay if less than : Branch to statement at adress of signed 16-bit immediate if R1 is less than zero",
                     BasicInstructionFormat.I_FORMAT,
@@ -678,6 +842,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                           if (RegisterFile.getValue(operands[0]) < 0)
                           {
                              processBranch(sext(operands[1]));
+                          }
+                       }
+                    }));
+            
+            instructionList.add(
+                    new BasicInstruction("bltid R1,label",
+                	 "Branch with delay if less than : Branch to statement at adress of label if R1 is less than zero",
+                    BasicInstructionFormat.I_FORMAT,
+                    "101111 10010 fffff ssssssssssssssss",
+                    new SimulationCode()
+                    {
+                        public void simulate(ProgramStatement statement) throws ProcessingException
+                       {
+                          int[] operands = statement.getOperands();
+                          Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                          if (RegisterFile.getValue(operands[0]) < 0)
+                          {
+                             processJump(operands[1]);
                           }
                        }
                     }));
@@ -737,6 +919,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                    }));
             
             instructionList.add(
+                    new BasicInstruction("bnei R1,label",
+                	 "Branch if not equal : Branch to statement at adress of label if R1 is not zero",
+                    BasicInstructionFormat.I_FORMAT,
+                    "101111 00001 fffff ssssssssssssssss",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, false);
+                         if (RegisterFile.getValue(operands[0]) != 0)
+                         {
+                            processJump(operands[1]);
+                         }
+                      }
+                   }));
+            
+            instructionList.add(
                     new BasicInstruction("bneid R1,-100",
                 	 "Branch with delay if not equal : Branch to statement at adress of signed 16-bit immediate if R1 is not zero",
                     BasicInstructionFormat.I_FORMAT,
@@ -750,6 +950,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                           if (RegisterFile.getValue(operands[0]) != 0)
                           {
                              processBranch(sext(operands[1]));
+                          }
+                       }
+                    }));
+            
+            instructionList.add(
+                    new BasicInstruction("bneid R1,label",
+                	 "Branch with delay if not equal : Branch to statement at adress of label if R1 is not zero",
+                    BasicInstructionFormat.I_FORMAT,
+                    "101111 10001 fffff ssssssssssssssss",
+                    new SimulationCode()
+                    {
+                        public void simulate(ProgramStatement statement) throws ProcessingException
+                       {
+                          int[] operands = statement.getOperands();
+                          Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                          if (RegisterFile.getValue(operands[0]) != 0)
+                          {
+                             processJump(operands[1]);
                           }
                        }
                     }));
@@ -877,6 +1095,21 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                    }));
             
             instructionList.add(
+                    new BasicInstruction("brai label",
+                    "Unconditional absolute Branch : Jump to statement at adress of label",
+                	 BasicInstructionFormat.I_FORMAT,
+                    "101110 00000 01000 ffffffffffffffff",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, false);
+                         processJump(operands[0]);
+                      }
+                   }));
+            
+            instructionList.add(
                     new BasicInstruction("brid -100",
                     "Unconditional Branch with delay : Branch to statement at adress of signed 16-bit immediate",
                 	 BasicInstructionFormat.I_FORMAT,
@@ -907,6 +1140,21 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                    }));
             
             instructionList.add(
+                    new BasicInstruction("braid label",
+                    "Unconditional absolute Branch with delay : Jump to statement at adress of label",
+                	 BasicInstructionFormat.I_FORMAT,
+                    "101110 00000 11000 ffffffffffffffff",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                         processJump(operands[0]);
+                      }
+                   }));
+            
+            instructionList.add(
                     new BasicInstruction("brlid R1,-100",
                     "Unconditional Branch with link and delay : Branch to statement at adress of signed 16-bit immediate and store PC in R1",
                 	 BasicInstructionFormat.I_FORMAT,
@@ -923,7 +1171,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                    }));
             
             instructionList.add(
-                    new BasicInstruction("brald R1,R2",
+                    new BasicInstruction("brald R1,-100",
                     "Unconditional absolute Branch with link and delay : Jump to statement at adress of signed 16-bit immediate and store PC in R1",
                 	 BasicInstructionFormat.I_FORMAT,
                     "101110 fffff 11100 ssssssssssssssss",
@@ -935,6 +1183,22 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                          Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
                          processReturnAddress(operands[0]);
                          processJump(sext(operands[1]));
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("brald R1,label",
+                    "Unconditional absolute Branch with link and delay : Jump to statement at adress of label and store PC in R1",
+                	 BasicInstructionFormat.I_FORMAT,
+                    "101110 fffff 11100 ssssssssssssssss",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         Globals.getSettings().setBooleanSetting(Settings.DELAYED_BRANCHING_ENABLED, true);
+                         processReturnAddress(operands[0]);
+                         processJump(operands[1]);
                       }
                    }));
             
@@ -1082,6 +1346,55 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                                         + sext(operands[1])))
                                                 << 16
                                                 >> 16);
+                         } 
+                             catch (AddressErrorException e)
+                            {
+                               throw new ProcessingException(statement, e);
+                            }
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("lw R1,R2,R3",
+                    "Load Halfword Unsigned : Loads a word from the memory location at (R2 plus R3) into R1",
+                	 BasicInstructionFormat.R_FORMAT,
+                    "110010 fffff sssss ttttt 00000 000000",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         try
+                         {
+                            RegisterFile.updateRegister(operands[0],
+                            //TODO: alignment (bit 30&31 = 0)
+                                Globals.memory.getWord(
+                                RegisterFile.getValue(operands[2]
+                                        + operands[1])));
+                         } 
+                             catch (AddressErrorException e)
+                            {
+                               throw new ProcessingException(statement, e);
+                            }
+                      }
+                   }));
+            
+            instructionList.add(
+                    new BasicInstruction("lwi R1,R2,-100",
+                    "Load Halfword Unsigned: Loads a word from the memory location at (R2 plus sign extended 16bit immediate) into R1",
+                    BasicInstructionFormat.I_FORMAT,
+                    "111010 fffff sssss tttttttttttttttt",
+                    new SimulationCode()
+                   {
+                       public void simulate(ProgramStatement statement) throws ProcessingException
+                      {
+                         int[] operands = statement.getOperands();
+                         try
+                         {
+                            RegisterFile.updateRegister(operands[0],
+                                Globals.memory.getWord(
+                                RegisterFile.getValue(operands[2]
+                                        + operands[1])));
                          } 
                              catch (AddressErrorException e)
                             {
